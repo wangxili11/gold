@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GoldCalcTool - 在线黄金价值计算器</title>
+  <meta name="description" content="GoldCalcTool 提供基于实时金价的黄金价值估算：支持不同K数（24K/18K/14K等）、多种重量单位（克/盎司/千克等），适用于首饰、金币与废金回收的熔炼价值快速计算。" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="GoldCalcTool - 在线黄金价值计算器" />
+  <meta property="og:description" content="基于实时金价的黄金价值估算：支持多K数、多单位，快速计算首饰、金币与废金回收的熔炼价值。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://goldcalctool.com/" />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1a31;
+      --text:#e8edf7;
+      --muted:#a9b4cc;
+      --border: rgba(255,255,255,.12);
+      --accent:#d7b15a;
+      --accent2:#f0d79a;
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(215,177,90,.18), transparent 55%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(240,215,154,.14), transparent 50%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 60px}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:10px 0 24px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; text-decoration:none;
+    }
+    .logo{
+      width:40px; height:40px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(215,177,90,.95), rgba(240,215,154,.85));
+      box-shadow: 0 10px 24px rgba(215,177,90,.22);
+      position:relative;
+    }
+    .logo:after{
+      content:""; position:absolute; inset:10px;
+      border-radius:10px; border:1px solid rgba(0,0,0,.18);
+      background: rgba(11,18,32,.14);
+    }
+    .brand h1{font-size:16px; margin:0; letter-spacing:.2px}
+    .brand p{margin:2px 0 0; font-size:12px; color:var(--muted)}
+    nav{display:flex; gap:10px; flex-wrap:wrap}
+    .pill{
+      text-decoration:none;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .pill:hover{border-color:rgba(215,177,90,.5); color:var(--text)}
+    .hero{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:16px;
+      align-items:stretch;
+      margin-top:8px;
+    }
+    @media (max-width: 900px){
+      .hero{grid-template-columns:1fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .hero-main{padding:28px 26px}
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:13px; color:var(--muted);
+      padding:8px 12px; border:1px solid var(--border);
+      border-radius:999px; background: rgba(255,255,255,.03);
+    }
+    .k-dot{
+      width:10px; height:10px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, var(--accent2), var(--accent));
+      box-shadow: 0 0 0 6px rgba(215,177,90,.12);
+    }
+    h2{
+      margin:14px 0 10px;
+      font-size:40px;
+      line-height:1.12;
+      letter-spacing:-.5px;
+    }
+    @media (max-width: 520px){
+      h2{font-size:32px}
+    }
+    .lead{margin:0; color:var(--muted); font-size:16px; max-width:62ch}
+    .cta{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      text-decoration:none;
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      font-weight:600;
+      min-width: 160px;
+    }
+    .btn.primary{
+      border-color: rgba(215,177,90,.55);
+      background: linear-gradient(135deg, rgba(215,177,90,.24), rgba(240,215,154,.14));
+    }
+    .btn:hover{transform: translateY(-1px); transition: .15s ease; border-color: rgba(215,177,90,.65)}
+    .btn small{font-weight:500; color:var(--muted)}
+    .hero-side{padding:18px}
+    .stat{
+      padding:16px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background: rgba(11,18,32,.25);
+      margin-bottom:12px;
+    }
+    .stat b{display:block; font-size:14px; margin-bottom:6px}
+    .stat span{display:block; color:var(--muted); font-size:13px}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+    .feature{padding:18px}
+    .feature h3{margin:0 0 6px; font-size:16px}
+    .feature p{margin:0; color:var(--muted); font-size:14px}
+    .section{margin-top:18px}
+    .section .inner{padding:22px}
+    .two{
+      display:grid; grid-template-columns: 1fr 1fr; gap:14px;
+    }
+    @media (max-width: 900px){ .two{grid-template-columns:1fr} }
+    ol{margin:10px 0 0 20px; color:var(--muted)}
+    li{margin:8px 0}
+    code.inline{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding:2px 6px; border:1px solid var(--border);
+      border-radius:8px; background: rgba(255,255,255,.03); color: var(--text);
+      font-size: 12px;
+    }
+    footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding: 12px 4px 0;
+    }
+    .linkbox{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .copyhint{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .url{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(215,177,90,.55);
+      background: rgba(215,177,90,.08);
+      text-decoration:none;
+      font-weight:600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <a class="brand" href="https://goldcalctool.com/" target="_blank" rel="noopener noreferrer">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>GoldCalcTool</h1>
+          <p>实时金价 · 黄金熔炼价值估算</p>
+        </div>
+      </a>
+      <nav>
+        <a class="pill" href="#features">功能亮点</a>
+        <a class="pill" href="#how">如何使用</a>
+        <a class="pill" href="#scenes">适用场景</a>
+        <a class="pill" href="#link">快速访问</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="card hero-main">
+        <div class="kicker"><span class="k-dot" aria-hidden="true"></span>在线黄金价值计算器（实时参考）</div>
+        <h2>用实时金价，快速估算你的黄金价值</h2>
+        <p class="lead">
+          GoldCalcTool 提供便捷的黄金估价方式：输入重量与含金量（K 数），即可获得基于实时金价的价值参考。
+          适用于首饰、金币与废金回收等场景，帮助你在交易前做出更有依据的判断。
+        </p>
+
+        <div class="cta">
+          <a class="btn primary" href="https://goldcalctool.com/" target="_blank" rel="noopener noreferrer">
+            立即打开计算器 <small>goldcalctool.com</small>
+          </a>
+          <a class="btn" href="#how">查看使用步骤</a>
+        </div>
+
+        <div class="linkbox" id="link">
+          <a class="url" href="https://goldcalctool.com/" target="_blank" rel="noopener noreferrer">
+            https://goldcalctool.com/
+          </a>
+          <span class="copyhint">提示：上面链接可直接复制到你的 GitHub/项目页面中。</span>
+        </div>
+      </div>
+
+      <aside class="card hero-side">
+        <div class="stat">
+          <b>覆盖多种K数</b>
+          <span>例如 24K、18K、14K 等常见含金量选项</span>
+        </div>
+        <div class="stat">
+          <b>多单位输入</b>
+          <span>支持常用重量单位（如克、盎司、千克等）</span>
+        </div>
+        <div class="stat">
+          <b>价值参考更直观</b>
+          <span>面向熔炼价值/回收估价的快速测算</span>
+        </div>
+        <div class="stat">
+          <b>适合多角色使用</b>
+          <span>珠宝从业者、投资者、回收商与个人用户</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid" id="features">
+      <div class="card feature">
+        <h3>实时金价参考</h3>
+        <p>以最新市场价格为参考，减少手算与来回换算成本。</p>
+      </div>
+      <div class="card feature">
+        <h3>按含金量精确估算</h3>
+        <p>通过选择不同 K 数，匹配不同纯度的黄金价值计算。</p>
+      </div>
+      <div class="card feature">
+        <h3>多单位输入与换算</h3>
+        <p>支持常见重量单位输入，便于对接称重结果与交易习惯。</p>
+      </div>
+    </section>
+
+    <section class="section card" id="how">
+      <div class="inner two">
+        <div>
+          <h3 style="margin:0 0 8px; font-size:18px;">如何使用</h3>
+          <ol>
+            <li>打开 <a href="https://goldcalctool.com/" target="_blank" rel="noopener noreferrer"><code class="inline">goldcalctool.com</code></a></li>
+            <li>输入黄金重量（选择与你称重一致的单位）</li>
+            <li>选择含金量（K 数，例如 24K / 18K / 14K 等）</li>
+            <li>查看估算结果，并结合手续费/折扣等交易因素做最终判断</li>
+          </ol>
+        </div>
+        <div>
+          <h3 style="margin:0 0 8px; font-size:18px;">使用建议</h3>
+          <ol>
+            <li>估算结果仅作参考；实际成交价可能受回收损耗、工费、渠道等影响</li>
+            <li>若用于回收场景，可预留合理折扣区间以贴近真实报价</li>
+            <li>交易前建议对比多个渠道报价，避免单点信息偏差</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section card" id="scenes">
+      <div class="inner">
+        <h3 style="margin:0 0 10px; font-size:18px;">适用场景</h3>
+        <div class="grid" style="margin-top:0">
+          <div class="card feature" style="box-shadow:none">
+            <h3>废金/旧金回收估价</h3>
+            <p>快速得出熔炼价值参考，便于与回收报价对照。</p>
+          </div>
+          <div class="card feature" style="box-shadow:none">
+            <h3>首饰购买/以旧换新</h3>
+            <p>核算黄金部分价值，辅助评估工费与溢价是否合理。</p>
+          </div>
+          <div class="card feature" style="box-shadow:none">
+            <h3>金币/金条价值测算</h3>
+            <p>按重量与纯度计算，帮助跟踪持仓的市场价值变化。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> GoldCalcTool 介绍页（静态 HTML）</div>
+      <div>
+        免责声明：本页与计算结果仅供信息参考，不构成投资或交易建议。
+        <a href="https://goldcalctool.com/" target="_blank" rel="noopener noreferrer">访问工具</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
